@@ -81,6 +81,25 @@ public unsafe class LowLevelArray<T> : IDisposable where T : unmanaged
         }
     }
 
+    /// <summary>
+    /// Creates a new instance of the low level array with the initial values provided.
+    /// </summary>
+    /// <param name="initialValues"></param>
+    public LowLevelArray(params T[] initialValues)
+    {
+        ArgumentNullException.ThrowIfNull(initialValues);
+
+        _length = initialValues.Length;
+        var totalBytes = _length * sizeof(T);
+
+        _baseAddress = (T*)NativeMemory.AllocZeroed((nuint)totalBytes);
+
+        for (int i = 0; i < _length; i++)
+        {
+            *(_baseAddress + i) = initialValues[i];
+        }
+    }
+
     public void Dispose()
     {
         Dispose(true);
