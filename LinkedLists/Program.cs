@@ -10,3 +10,6 @@ list.Add(atIndex: 4, 50);
 
 // 10 -> 20 - 30 -> 40 -> 50 -> NULL
 list.Display();
+
+list.Remove(0);
+list.Display();

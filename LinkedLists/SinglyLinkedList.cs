@@ -85,6 +85,42 @@ public unsafe class SinglyLinkedList : IDisposable
         current->Next = newNode;
     }
 
+    /// <summary>
+    /// Remove the final item in the linked list
+    /// </summary>
+    public void Remove(int index)
+    {
+        if (index < 0 || _head is null)
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of");
+
+        // Remove the head node.
+        if (index == 0)
+        {
+            Node* temp = _head;
+            _head = _head->Next;
+            NativeMemory.Free(temp);
+            return;
+        }
+
+        // Traverse to  the node BEFORE target index.
+        Node* current = _head;
+        for (int i = 0; i < index - 1; i++)
+        {
+            if (current->Next is null)
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of the bounds of the list.");
+            current = current->Next;
+        }
+
+        // Ensure the node to be deleted actually exists.
+        if (current->Next == null)
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of bounds of the list.");
+
+        // current now is at node before the target node.
+        Node* nodeToDelete = current->Next;
+        current->Next = nodeToDelete->Next; // Unlink the node from the list
+        NativeMemory.Free(nodeToDelete); // Free the memory the deleted node
+    }
+
     // Displays the list's contents
     public void Display()
     {
@@ -112,12 +148,12 @@ public unsafe class SinglyLinkedList : IDisposable
             return;
 
         // Free the memory allocated for the list's nodes.
-        if(_head is not null)
+        if (_head is not null)
         {
             Node* current = _head;
-            
+
             // Traverse the list and free each node.
-            while(current is not null)
+            while (current is not null)
             {
                 Node* next = current->Next;
                 NativeMemory.Free(current);
