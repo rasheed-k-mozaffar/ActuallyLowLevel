@@ -1,4 +1,4 @@
-﻿using LowLevelLinkedLists;
+﻿using LowLevelLinkedLists.Singly;
 
 SinglyLinkedList list = new();
 list.Add(10);

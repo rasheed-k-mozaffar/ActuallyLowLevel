@@ -1,8 +1,8 @@
 using System;
 
-namespace LowLevelLinkedLists;
+namespace LowLevelLinkedLists.Singly;
 
-public unsafe struct Node
+public unsafe struct SinglyNode
 {
     /// <summary>
     /// The data stored in the node
@@ -12,5 +12,5 @@ public unsafe struct Node
     /// <summary>
     /// A pointer to the next node in the list
     /// </summary>
-    public Node* Next;
+    public SinglyNode* Next;
 }

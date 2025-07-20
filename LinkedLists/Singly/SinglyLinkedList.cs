@@ -1,13 +1,13 @@
 using System.Runtime.InteropServices;
 
-namespace LowLevelLinkedLists;
+namespace LowLevelLinkedLists.Singly;
 
 public unsafe class SinglyLinkedList : IDisposable
 {
     private bool _disposed = false;
 
     // Pointer to the first node in the list
-    private Node* _head = null;
+    private SinglyNode* _head = null;
 
     /// <summary>
     /// Adds a new item to the list at the end
@@ -16,7 +16,7 @@ public unsafe class SinglyLinkedList : IDisposable
     public void Add(int data)
     {
         // Allocate zeroed memory for the new node
-        Node* newNode = (Node*)NativeMemory.AllocZeroed((nuint)sizeof(Node));
+        SinglyNode* newNode = (SinglyNode*)NativeMemory.AllocZeroed((nuint)sizeof(SinglyNode));
 
         // Initialize the new node with the data received.
         newNode->Data = data;
@@ -31,7 +31,7 @@ public unsafe class SinglyLinkedList : IDisposable
         }
 
         // If the list is not empty, traverse till the end of the list
-        Node* current = _head;
+        SinglyNode* current = _head;
         while (current->Next is not null)
         {
             current = current->Next;
@@ -48,7 +48,7 @@ public unsafe class SinglyLinkedList : IDisposable
             throw new ArgumentOutOfRangeException(nameof(atIndex), "Index cannot be negative.");
 
         // Allocate memeory for the new node and initialize it
-        Node* newNode = (Node*)NativeMemory.AllocZeroed((nuint)sizeof(Node));
+        SinglyNode* newNode = (SinglyNode*)NativeMemory.AllocZeroed((nuint)sizeof(SinglyNode));
         newNode->Data = data;
 
         // Handle inserting at first
@@ -60,7 +60,7 @@ public unsafe class SinglyLinkedList : IDisposable
         }
 
         // Keep a pointer to the current node
-        Node* current = _head;
+        SinglyNode* current = _head;
 
         // Traverse to the item at index - 1 from where we want to add
         for (int i = 0; i < atIndex - 1; i++)
@@ -96,14 +96,14 @@ public unsafe class SinglyLinkedList : IDisposable
         // Remove the head node.
         if (index == 0)
         {
-            Node* temp = _head;
+            SinglyNode* temp = _head;
             _head = _head->Next;
             NativeMemory.Free(temp);
             return;
         }
 
         // Traverse to  the node BEFORE target index.
-        Node* current = _head;
+        SinglyNode* current = _head;
         for (int i = 0; i < index - 1; i++)
         {
             if (current->Next is null)
@@ -116,7 +116,7 @@ public unsafe class SinglyLinkedList : IDisposable
             throw new ArgumentOutOfRangeException(nameof(index), "Index is out of bounds of the list.");
 
         // current now is at node before the target node.
-        Node* nodeToDelete = current->Next;
+        SinglyNode* nodeToDelete = current->Next;
         current->Next = nodeToDelete->Next; // Unlink the node from the list
         NativeMemory.Free(nodeToDelete); // Free the memory the deleted node
     }
@@ -125,7 +125,7 @@ public unsafe class SinglyLinkedList : IDisposable
     public void Display()
     {
         Console.Write("Head -> ");
-        Node* current = _head;
+        SinglyNode* current = _head;
         while (current != null)
         {
             Console.Write($"[Data: {current->Data} | Addr: {(long)current:X}] -> ");
@@ -150,12 +150,12 @@ public unsafe class SinglyLinkedList : IDisposable
         // Free the memory allocated for the list's nodes.
         if (_head is not null)
         {
-            Node* current = _head;
+            SinglyNode* current = _head;
 
             // Traverse the list and free each node.
             while (current is not null)
             {
-                Node* next = current->Next;
+                SinglyNode* next = current->Next;
                 NativeMemory.Free(current);
                 current = next;
             }
