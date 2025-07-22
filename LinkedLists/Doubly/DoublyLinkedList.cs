@@ -115,6 +115,72 @@ public unsafe class DoublyLinkedList : IDisposable
         }
     }
 
+    /// <summary>
+    /// Removes an item at a given index.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public void Remove(int index)
+    {
+        if (index < 0 || _head is null)
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of bounds.");
+
+        // Remove the head node
+        if (index == 0)
+        {
+            // Store the head in a temp node to be deleted
+            DoublyNode* nodeToRemove = _head;
+            // Move the head to the next node
+            _head = _head->Next;
+
+            // Added check: If the list is now empty, the tail must also be null
+            if (_head is null)
+                _tail = null;
+            else
+                // The new head's previous pointer must be updated to null
+                _head->Previous = null;
+
+            // Free the allocated memory for the old head node
+            NativeMemory.Free(nodeToRemove);
+            return;
+        }
+
+        DoublyNode* current = _head;
+        // This traversal logic is correct for finding the node at the given index.
+        for (int i = 0; i < index; i++)
+        {
+            current = current->Next;
+            // If current becomes null then the index is outside the list's bounds
+            if (current is null)
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is outside the bounds of the list.");
+        }
+
+        // 'current' is now the node we need to remove.
+
+        // Remove at the tail
+        if (current == _tail) // Using a direct check against _tail is slightly cleaner
+        {
+            // The node to remove is the tail
+            _tail = current->Previous;
+            // The new tail must not point to anything next
+            _tail->Next = null;
+            // Free the memory for the old tail
+            NativeMemory.Free(current);
+        }
+        else // Remove from the middle
+        {
+            // Store the node to remove
+            DoublyNode* nodeToRemove = current;
+            // Get the links of the node to delete
+            DoublyNode* previous = nodeToRemove->Previous;
+            DoublyNode* next = nodeToRemove->Next;
+
+            previous->Next = next;
+            next->Previous = previous;
+            NativeMemory.Free(nodeToRemove);
+        }
+    }
+
 
     public void Display()
     {
