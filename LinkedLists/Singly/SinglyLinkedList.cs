@@ -86,12 +86,12 @@ public unsafe class SinglyLinkedList : IDisposable
     }
 
     /// <summary>
-    /// Remove the final item in the linked list
+    /// Removes the item at given index.
     /// </summary>
     public void Remove(int index)
     {
         if (index < 0 || _head is null)
-            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of");
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of bounds.");
 
         // Remove the head node.
         if (index == 0)
